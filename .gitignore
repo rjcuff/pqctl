@@ -1,0 +1,24 @@
+# Binaries
+pqctl
+pqctl.exe
+*.exe
+
+# Build output
+/dist/
+/bin/
+
+# Go
+*.test
+*.out
+/vendor/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+CLAUDE.md
