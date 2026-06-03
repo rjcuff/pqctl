@@ -40,9 +40,12 @@ go build -o pqctl .
 ### Key generation
 
 ```bash
-# ML-DSA-65 (default, NIST-recommended)
+# ML-DSA-65 (default, NIST-recommended post-quantum signing)
 pqctl keygen --out mykey
 # → mykey.priv.pem + mykey.pub.pem
+
+# ML-KEM-768 (post-quantum encryption)
+pqctl keygen --algo ml-kem-768 --out mykey
 
 # Ed25519 (classical)
 pqctl keygen --algo ed25519 --out mykey
@@ -51,18 +54,32 @@ pqctl keygen --algo ed25519 --out mykey
 pqctl keygen --algo hybrid --out mykey
 ```
 
-### Signing _(coming in Phase 2)_
+### Signing
 
 ```bash
-pqctl sign file.txt --key mykey.priv.pem --out file.txt.sig
-pqctl verify file.txt --sig file.txt.sig --pubkey mykey.pub.pem
+pqctl sign --key mykey.priv.pem --in file.txt
+pqctl verify --pubkey mykey.pub.pem --in file.txt --sig file.txt.sig
 ```
 
-### Encryption _(coming in Phase 4)_
+### Encryption
 
 ```bash
-pqctl encrypt file.txt --recipient mykey.pub.pem --out file.txt.enc
-pqctl decrypt file.txt.enc --key mykey.priv.pem --out file.txt
+# generate a KEM keypair first
+pqctl keygen --algo ml-kem-768 --out kemkey
+
+pqctl encrypt --recipient kemkey.pub.pem --in secret.txt
+pqctl decrypt --key kemkey.priv.pem --in secret.txt.enc --out secret.txt
+```
+
+### Inspect
+
+```bash
+pqctl inspect mykey.pub.pem
+# file:      mykey.pub.pem
+# type:      ML-DSA-65 PUBLIC KEY
+# algorithm: ML-DSA-65 (FIPS 204 — post-quantum signing)
+# key type:  public
+# size:      1952 bytes
 ```
 
 ---
@@ -70,6 +87,8 @@ pqctl decrypt file.txt.enc --key mykey.priv.pem --out file.txt
 ## Why post-quantum?
 
 Classical algorithms (RSA, ECDSA, X25519) are broken by sufficiently large quantum computers running Shor's algorithm. NIST finalized ML-DSA and ML-KEM in 2024 as the replacement standards. `pqctl` makes them as easy to use as `openssl genrsa`.
+
+**Harvest now, decrypt later:** attackers are already recording encrypted traffic today. When quantum computers arrive, they decrypt it retroactively. The time to migrate is now.
 
 ---
 
@@ -92,16 +111,6 @@ pqctl/
 - [Cloudflare CIRCL](https://github.com/cloudflare/circl) — Go PQC library
 - [Cobra](https://github.com/spf13/cobra) — CLI framework
 - Go 1.22+
-
----
-
-## Roadmap
-
-- [x] Phase 1 — `keygen` (ML-DSA-65, Ed25519, hybrid)
-- [ ] Phase 2 — `sign` + `verify`
-- [ ] Phase 3 — `inspect` + file format polish
-- [ ] Phase 4 — `encrypt` + `decrypt` (ML-KEM-768)
-- [ ] Phase 5 — v0.1.0 release + binary downloads
 
 ---
 
