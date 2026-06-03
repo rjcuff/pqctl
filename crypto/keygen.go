@@ -47,3 +47,4 @@ func GenerateEd25519() (*KeyPair, error) {
 		PublicKey:  pub,
 	}, nil
 }
+

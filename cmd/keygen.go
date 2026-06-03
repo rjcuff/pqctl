@@ -27,11 +27,29 @@ func runKeygen(cmd *cobra.Command, args []string) error {
 
 	switch algo {
 	case "ml-dsa-65":
-		return keygenMLDSA65(out)
+		if err := keygenMLDSA65(out); err != nil {
+			return err
+		}
+		fmt.Printf("generated ML-DSA-65 keypair\n  private: %s.priv.pem\n  public:  %s.pub.pem\n", out, out)
+		return nil
+
 	case "ed25519":
-		return keygenEd25519(out)
+		if err := keygenEd25519(out); err != nil {
+			return err
+		}
+		fmt.Printf("generated ED25519 keypair\n  private: %s.priv.pem\n  public:  %s.pub.pem\n", out, out)
+		return nil
+	case "hybrid":
+		if err := keygenMLDSA65(out + ".mldsa65"); err != nil {
+			return err
+		}
+		if err := keygenEd25519(out + ".ed25519"); err != nil {
+			return err
+		}
+		fmt.Printf("generated hybrid keypair\n  ML-DSA-65 private: %s.mldsa65.priv.pem\n  ML-DSA-65 public:  %s.mldsa65.pub.pem\n  ED25519 private:   %s.ed25519.priv.pem\n  ED25519 public:    %s.ed25519.pub.pem\n", out, out, out, out)
+		return nil
 	default:
-		return fmt.Errorf("unknown algorithm %q — supported: ml-dsa-65", algo)
+		return fmt.Errorf("unknown algorithm %q — supported: ml-dsa-65, ed25519, hybrid", algo)
 	}
 }
 
@@ -51,7 +69,6 @@ func keygenMLDSA65(out string) error {
 		return err
 	}
 
-	fmt.Printf("generated ML-DSA-65 keypair\n  private: %s\n  public:  %s\n", privPath, pubPath)
 	return nil
 }
 
@@ -71,6 +88,5 @@ func keygenEd25519(out string) error {
 		return err
 	}
 
-	fmt.Printf("generated ED25519 keypair\n  private: %s\n  public:  %s\n", privPath, pubPath)
 	return nil
 }
