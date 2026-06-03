@@ -114,6 +114,14 @@ pqctl/
 
 ---
 
+## Status & Caveats
+
+**Alpha.** Do not use to protect production secrets yet.
+
+**PEM format note:** ML-DSA and ML-KEM PEM/PKIX encodings are not yet RFC-standardized (as of mid-2026). pqctl's PEM format is internally consistent — keys round-trip correctly — but will not interoperate with OpenSSL or other tools until IETF LAMPS drafts finalize.
+
+---
+
 ## License
 
 MIT
