@@ -17,6 +17,12 @@ func Execute() {
 	setupKeygenFlags()
 	rootCmd.AddCommand(keygenCmd)
 
+	setupSignFlags()
+	rootCmd.AddCommand(signCmd)
+
+	setupVerifyFlags()
+	rootCmd.AddCommand(verifyCmd)
+
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
