@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"fmt"
 
+	"github.com/cloudflare/circl/kem/mlkem/mlkem768"
 	"github.com/cloudflare/circl/sign/mldsa/mldsa65"
 )
 
@@ -45,6 +46,30 @@ func GenerateEd25519() (*KeyPair, error) {
 	return &KeyPair{
 		PrivateKey: priv,
 		PublicKey:  pub,
+	}, nil
+}
+
+// GenerateMLKEM768 generates an ML-KEM-768 keypair using crypto/rand.
+func GenerateMLKEM768() (*KeyPair, error) {
+	scheme := mlkem768.Scheme()
+	pub, priv, err := scheme.GenerateKeyPair()
+	if err != nil {
+		return nil, fmt.Errorf("keygen: ml-kem-768: %w", err)
+	}
+
+	privBytes, err := priv.MarshalBinary()
+	if err != nil {
+		return nil, fmt.Errorf("keygen: marshal ml-kem-768 private key: %w", err)
+	}
+
+	pubBytes, err := pub.MarshalBinary()
+	if err != nil {
+		return nil, fmt.Errorf("keygen: marshal ml-kem-768 public key: %w", err)
+	}
+
+	return &KeyPair{
+		PrivateKey: privBytes,
+		PublicKey:  pubBytes,
 	}, nil
 }
 

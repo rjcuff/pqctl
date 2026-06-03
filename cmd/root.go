@@ -23,6 +23,14 @@ func Execute() {
 	setupVerifyFlags()
 	rootCmd.AddCommand(verifyCmd)
 
+	setupEncryptFlags()
+	rootCmd.AddCommand(encryptCmd)
+
+	setupDecryptFlags()
+	rootCmd.AddCommand(decryptCmd)
+
+	rootCmd.AddCommand(inspectCmd)
+
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
