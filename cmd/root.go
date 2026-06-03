@@ -34,7 +34,10 @@ func Execute() {
 	setupDecryptFlags()
 	rootCmd.AddCommand(decryptCmd)
 
+	setupInspectFlags()
 	rootCmd.AddCommand(inspectCmd)
+
+	rootCmd.AddCommand(completionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/rjcuff/pqctl/crypto"
-	"github.com/rjcuff/pqctl/keys"
 	"github.com/spf13/cobra"
 )
 
@@ -35,12 +34,12 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("decrypt: read file %s: %w", inPath, err)
 	}
 
-	block, err := keys.ReadPEM(keyPath)
+	keyBytes, err := loadPrivateKey(keyPath)
 	if err != nil {
 		return err
 	}
 
-	plaintext, err := crypto.DecryptMLKEM768(block.Bytes, ciphertext)
+	plaintext, err := crypto.DecryptMLKEM768(keyBytes, ciphertext)
 	if err != nil {
 		return err
 	}

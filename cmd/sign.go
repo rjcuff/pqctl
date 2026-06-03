@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/rjcuff/pqctl/crypto"
-	"github.com/rjcuff/pqctl/keys"
 	"github.com/spf13/cobra"
 )
 
@@ -37,12 +36,12 @@ func runSign(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("sign: read file %s: %w", inPath, err)
 	}
 
-	block, err := keys.ReadPEM(keyPath)
+	keyBytes, err := loadPrivateKey(keyPath)
 	if err != nil {
 		return err
 	}
 
-	sig, err := crypto.SignMLDSA65(block.Bytes, message)
+	sig, err := crypto.SignMLDSA65(keyBytes, message)
 	if err != nil {
 		return err
 	}
