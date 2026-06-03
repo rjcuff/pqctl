@@ -12,6 +12,11 @@ var rootCmd = &cobra.Command{
 	Long:  `pqctl makes post-quantum cryptography as accessible as OpenSSL. Uses NIST-standardized ML-DSA and ML-KEM algorithms.`,
 }
 
+// SetVersion sets the version string shown in --version output.
+func SetVersion(v string) {
+	rootCmd.Version = v
+}
+
 // Execute runs pqctl.
 func Execute() {
 	setupKeygenFlags()
