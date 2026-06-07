@@ -37,6 +37,9 @@ func Execute() {
 	setupInspectFlags()
 	rootCmd.AddCommand(inspectCmd)
 
+	setupCloudFlags()
+	rootCmd.AddCommand(cloudCmd)
+
 	rootCmd.AddCommand(completionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
